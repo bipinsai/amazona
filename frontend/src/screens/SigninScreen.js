@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { signin } from '../actions/userActions';
+import { signin} from '../actions/userActions';
+import { getotp} from '../actions/userActions';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
@@ -19,8 +20,18 @@ export default function SigninScreen(props) {
   const dispatch = useDispatch();
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(signin(email, password));
+    // dispatch(signin(email, password));
+    dispatch(getotp(email));
   };
+  const submitHandler1 = (e) => {
+    e.preventDefault();
+    // dispatch(signin(email, password));
+    dispatch(signin(email,password));
+  };
+  // sendOtp()
+  // {
+  //   dispatch(getotp(email));
+  // }
   useEffect(() => {
     if (userInfo) {
       props.history.push(redirect);
@@ -45,7 +56,15 @@ export default function SigninScreen(props) {
           ></input>
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label />
+          <button className="primary" type = "submit">
+            Send Otp
+          </button>
+        </div>
+      </form>
+      <form className="form" onSubmit={submitHandler1}>
+        <div>
+          <label htmlFor="password">OTP</label>
           <input
             type="password"
             id="password"

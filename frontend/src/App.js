@@ -104,10 +104,11 @@ function App() {
             ) : (
               <Link to="/signin">Sign In</Link>
             )}
+            {/* Retailer ...... */}
             {userInfo && userInfo.isSeller && (
               <div className="dropdown">
                 <Link to="#admin">
-                  Seller <i className="fa fa-caret-down"></i>
+                  Retailer <i className="fa fa-caret-down"></i>
                 </Link>
                 <ul className="dropdown-content">
                   <li>

@@ -9,6 +9,9 @@ import {
   USER_SIGNIN_FAIL,
   USER_SIGNIN_REQUEST,
   USER_SIGNIN_SUCCESS,
+  USER_OTP_FAIL,
+  USER_OTP_REQUEST,
+  USER_OTP_SUCCESS,
   USER_SIGNOUT,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
@@ -26,13 +29,16 @@ import {
   USER_TOPSELLERS_LIST_FAIL,
 } from '../constants/userConstants';
 
-export const register = (name, email, password) => async (dispatch) => {
-  dispatch({ type: USER_REGISTER_REQUEST, payload: { email, password } });
+export const register = (name, email,phnumber, password,role) => async (dispatch) => {
+  dispatch({ type: USER_REGISTER_REQUEST, payload: { email,phnumber,password,role } });
   try {
+    console.log(role);
     const { data } = await Axios.post('/api/users/register', {
       name,
       email,
+      phnumber, 
       password,
+      role
     });
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
     dispatch({ type: USER_SIGNIN_SUCCESS, payload: data });
@@ -57,6 +63,25 @@ export const signin = (email, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_SIGNIN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getotp = (email) => async (dispatch) => {
+  dispatch({ type: USER_OTP_REQUEST, payload: { email} });
+  try {
+    const { data } = await Axios.post('/api/users/getotp', { email });
+    console.log(data)
+    console.log("here")
+    dispatch({ type: USER_OTP_SUCCESS, payload: data });
+    // localStorage.setItem('userInfo', JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_OTP_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

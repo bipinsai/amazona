@@ -8,7 +8,9 @@ import MessageBox from '../components/MessageBox';
 export default function RegisterScreen(props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phnumber, setPhnumber] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const redirect = props.location.search
@@ -24,7 +26,8 @@ export default function RegisterScreen(props) {
     if (password !== confirmPassword) {
       alert('Password and confirm password are not match');
     } else {
-      dispatch(register(name, email, password));
+      
+      dispatch(register(name, email, phnumber, password,role));
     }
   };
   useEffect(() => {
@@ -61,6 +64,16 @@ export default function RegisterScreen(props) {
           ></input>
         </div>
         <div>
+          <label htmlFor="phnumber">Phone Number</label>
+          <input
+            type="text"
+            id="phnumber"
+            placeholder="Enter phone number"
+            required
+            onChange={(e) => setPhnumber(e.target.value)}
+          ></input>
+        </div>
+        <div>
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -79,6 +92,14 @@ export default function RegisterScreen(props) {
             required
             onChange={(e) => setConfirmPassword(e.target.value)}
           ></input>
+        </div>
+        <div>
+          <label htmlFor="role">Role</label>
+          <select id = "role" onChange={(e) => setRole(e.target.value)} >
+            <option value="isCustomer">Customer</option>
+            <option value="isSeller">Retailer</option>
+            <option value="isWholesaler">Wholesaler</option>
+          </select>
         </div>
         <div>
           <label />

@@ -14,7 +14,9 @@ productRouter.get(
     const page = Number(req.query.pageNumber) || 1;
     const name = req.query.name || '';
     const category = req.query.category || '';
+    console.log(req.query.seller)
     const seller = req.query.seller || '';
+    console.log(seller)
     const order = req.query.order || '';
     const min =
       req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
@@ -56,6 +58,7 @@ productRouter.get(
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
       .limit(pageSize);
+      console.log(products);
     res.send({ products, page, pages: Math.ceil(count / pageSize) });
   })
 );

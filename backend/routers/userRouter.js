@@ -1,4 +1,5 @@
 import express from 'express';
+import { Auth } from "two-step-auth";
 import expressAsyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import data from '../data.js';
@@ -29,15 +30,19 @@ userRouter.get(
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
+    var e =  req.body.email
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      if (bcrypt.compareSync(req.body.password, user.password)) {
+      var ot = user.otp;
+      if (parseInt(req.body.password) == ot) {
         res.send({
           _id: user._id,
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
           isSeller: user.isSeller,
+          isWholesaler : user.isWholesaler,
+          isCustomer : user.isCustomer,
           token: generateToken(user),
         });
         return;
@@ -48,18 +53,54 @@ userRouter.post(
 );
 
 userRouter.post(
+  '/getotp',
+  expressAsyncHandler(async (req, res) => {
+    var e = req.body.email
+    console.log(e);
+    const user = await User.findOne({ email: req.body.email });
+    console.log("gone")
+    console.log(user)
+    if (user) {
+      const res1 = await Auth(e, "Company Name");
+      console.log(res1.OTP);
+      user.otp = res1.OTP;
+      const updatedUser = await user.save();
+      res.send({opt : res1.otp , message : "OPT Sent"})
+      return ;
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
+  })
+);
+
+userRouter.post(
   '/register',
   expressAsyncHandler(async (req, res) => {
+    var t = req.body.role;
+    // console.log(t);
+    var isC = false;
+    var isS = false;
+    var isW = false;
+    if( t === "isCustomer")
+      isC = true;
+    else if ( t === "isSeller")
+      isS = true;
+    else if ( t === "isWholesaler")
+      isW = true;
     const user = new User({
       name: req.body.name,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
+      phnumber : req.body.phnumber,
+      isCustomer : isC,
+      isSeller : isS,
+      isWholesaler : isW
     });
     const createdUser = await user.save();
     res.send({
       _id: createdUser._id,
       name: createdUser.name,
       email: createdUser.email,
+      phnumber: createdUser.phnumber,
       isAdmin: createdUser.isAdmin,
       isSeller: user.isSeller,
       token: generateToken(createdUser),

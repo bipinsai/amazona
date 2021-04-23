@@ -28,6 +28,7 @@ app.get('/api/config/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
 app.get('/api/config/google', (req, res) => {
+  console.log(process.env.GOOGLE_API_KEY )
   res.send(process.env.GOOGLE_API_KEY || '');
 });
 const __dirname = path.resolve();
